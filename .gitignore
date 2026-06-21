@@ -24,6 +24,7 @@ venv/
 ghost_output/
 *.json
 !package.json
+!requirements*.txt
 
 # OS
 .DS_Store
