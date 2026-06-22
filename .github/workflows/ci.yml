@@ -11,37 +11,19 @@ permissions:
 
 jobs:
   lint:
-    name: Lint & Format Check
+    name: Lint & format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install ruff
-        run: pip install ruff>=0.4.0
-      - name: Check formatting
-        run: ruff format --check .
-      - name: Run linter
-        run: ruff check .
-
-  type-check:
-    name: Type Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install mypy>=1.10.0
-      - name: Run mypy
-        run: mypy ghost.py || true
+      - run: pip install ruff>=0.4.0
+      - run: ruff format --check ghost/ tests/
+      - run: ruff check ghost/ tests/
 
   test:
-    name: Tests (Python ${{ matrix.python-version }})
+    name: Test (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -51,22 +33,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install pytest>=8.0.0 pytest-cov>=5.0.0
-      - name: Run tests
-        run: pytest tests/ -v --tb=short || true
+      - run: pip install -r requirements.txt && pip install pytest pytest-cov
+      - run: pytest tests/ -v --tb=short --cov=ghost
 
   security:
-    name: Security Scan
+    name: Security scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install safety
-        run: pip install safety
-      - name: Check dependencies for vulnerabilities
-        run: safety check -r requirements.txt || true
+      - run: pip install safety bandit
+      - run: safety check -r requirements.txt || true
+      - run: bandit -r ghost/ -ll --skip B101 || true

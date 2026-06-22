@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ghost-framework"
-version = "1.0.0"
+version = "2.0.0"
 description = "Evasion and payload crafting framework for authorized red team engagements"
 readme = "README.md"
 license = {text = "MIT"}
@@ -41,7 +41,7 @@ Repository = "https://github.com/arkanzasfeziii/Ghost"
 Issues = "https://github.com/arkanzasfeziii/Ghost/issues"
 
 [project.scripts]
-ghost = "ghost:main"
+ghost = "ghost.cli:main"
 
 [tool.ruff]
 target-version = "py310"
